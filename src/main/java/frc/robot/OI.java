@@ -87,6 +87,7 @@ public class OI {
   {
     return stick.getTrigger();
   }
+
   public OI()
   {
     stick = new Joystick(RobotMap.joystick);
