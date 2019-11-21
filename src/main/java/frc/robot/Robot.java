@@ -163,8 +163,9 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
   }
-
-    
-
+  /*
+  double st = oi.getStickT()/10;
+  drive.setEachWheel(st,st,st,st);
+*/
 
 }

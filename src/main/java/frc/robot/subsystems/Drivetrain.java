@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import frc.robot.RobotMap;
 
@@ -25,7 +26,8 @@ public class Drivetrain extends Subsystem {
   CANSparkMax flw = new CANSparkMax(RobotMap.flw,MotorType.kBrushless);
   CANSparkMax brw = new CANSparkMax(RobotMap.brw,MotorType.kBrushless);
   CANSparkMax blw = new CANSparkMax(RobotMap.blw,MotorType.kBrushless);
-  
+  //frw.setIdleMode(IdleMode.kBrake);
+
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
