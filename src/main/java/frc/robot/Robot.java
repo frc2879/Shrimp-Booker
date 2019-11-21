@@ -102,8 +102,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    double st = oi.getStickT()/10;
+    /*double st = oi.getStickT()/10;
     drive.setEachWheel(st,st,st,st);
+    */
+    //mecanumMove(double x,double y,double a)
+
+
+
+
   }
 
   @Override
