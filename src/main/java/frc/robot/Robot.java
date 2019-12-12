@@ -10,14 +10,16 @@
 
 package frc.robot;
 
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain;
-
-import com.kauailabs.navx.frc.AHRS;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -33,6 +35,18 @@ public class Robot extends TimedRobot {
   AHRS ahrs;
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
+
+  public Robot(){
+    try {
+      /* Communicate w/navX-MXP via the MXP SPI Bus.                                     */
+      /* Alternatively:  I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB     */
+      /* See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for details. */
+      ahrs = new AHRS(SPI.Port.kMXP); 
+    } catch (RuntimeException ex ) {
+        //DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
+    }
+  }
+
 
   /**
    * This function is run when the robot is first started up and should be
