@@ -13,13 +13,16 @@ package frc.robot;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Flag;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shot;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -31,8 +34,12 @@ import frc.robot.subsystems.Drivetrain;
 public class Robot extends TimedRobot {
   
   public static Drivetrain drive = new Drivetrain();
+  public static Claw claw = new Claw();
+  public static Flag flag = new Flag();
+  public static Intake intake = new Intake();
+  public static Shot shot = new Shot();
   public static OI oi;
-  AHRS ahrs;
+  public static AHRS ahrs;
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -153,25 +160,42 @@ public class Robot extends TimedRobot {
     double sx = oi.getStickX()*st;
     double sy = oi.getStickY()*st;
     double sa = oi.getStickA()*st;
-    //System.out.println("sx: "+sx+", sy: "+sy+", sa: "+sa);
-    
 
+    intake.elevate(0.05);
+    shot.shoot(0,0);
     if(oi.getStickTrig()){
-      double mag = Math.sqrt(Math.pow(sx,2)+Math.pow(sy,2));
-      double dir = Math.atan(sy/sx);
-      if(sx<0){
-        dir+=Math.PI;
+      double shotAngle = sa*45;
+      intake.elevate(0.5);
+      flag.point(shotAngle);
+      if(oi.getStickShoot()){
+        intake.elevate(1);
+        shot.shoot(1,shotAngle);
       }
-      dir=Math.round(dir/(Math.PI/4))*(Math.PI/4);
-      motion[0] = Math.cos(dir)*mag;
-      motion[1] = Math.sin(dir)*mag;
-      motion[2] = 0;
     } else {
+      
+      
       motion[0] = sx;
       motion[1] = sy;
       motion[2] = sa;
+      drive.mecanumMove(sx,sy,sa);
+
+      flag.point(0);
+      if(oi.getStickIntake()){
+        intake.point(0);
+        intake.spin(1);
+        intake.elevate(0.5);
+      } else {
+        intake.point(45);
+        intake.spin(0);
+      }
     }
-    drive.mecanumMove(sx,sy,sa);
+    if(oi.getStickClaw()){
+      claw.reach(1);
+    } else {
+      claw.pull(1);
+    }
+    
+    
   }
 
   /**

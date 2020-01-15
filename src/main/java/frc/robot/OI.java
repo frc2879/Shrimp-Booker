@@ -87,6 +87,18 @@ public class OI {
   {
     return stick.getTrigger();
   }
+  public boolean getStickIntake()
+  {
+    return stick.getRawButton(1);
+  }
+  public boolean getStickShoot()
+  {
+    return stick.getRawButton(2);
+  }
+  public boolean getStickClaw()
+  {
+    return stick.getRawButton(3);
+  }
 
   public OI()
   {

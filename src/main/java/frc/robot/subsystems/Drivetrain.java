@@ -11,9 +11,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANSparkMax.IdleMode;
-
 import frc.robot.RobotMap;
+import frc.robot.Robot;
 
 /**
  * Add your docs here.
@@ -26,6 +25,9 @@ public class Drivetrain extends Subsystem {
   CANSparkMax flw = new CANSparkMax(RobotMap.flw,MotorType.kBrushless);
   CANSparkMax brw = new CANSparkMax(RobotMap.brw,MotorType.kBrushless);
   CANSparkMax blw = new CANSparkMax(RobotMap.blw,MotorType.kBrushless);
+
+  float lockAngle;
+
   //frw.setIdleMode(IdleMode.kBrake);
 
   @Override
@@ -71,6 +73,15 @@ public class Drivetrain extends Subsystem {
   public void mecanumMove(double x,double y,double a){
     setWheels(mecanumSpeeds(x,y,a));
   }
+
+  public void lock(){
+    lockAngle = Robot.ahrs.getYaw();
+  }
+  public double matchLockAngle(double rate){
+    return (lockAngle-Robot.ahrs.getYaw())*rate;
+  }
+
+
 
 
 }
