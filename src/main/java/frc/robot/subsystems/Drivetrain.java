@@ -9,10 +9,12 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import frc.robot.RobotMap;
 import frc.robot.Robot;
+
 
 /**
  * Add your docs here.
@@ -21,10 +23,13 @@ public class Drivetrain extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  CANSparkMax frw = new CANSparkMax(RobotMap.frw,MotorType.kBrushless);
-  CANSparkMax flw = new CANSparkMax(RobotMap.flw,MotorType.kBrushless);
-  CANSparkMax brw = new CANSparkMax(RobotMap.brw,MotorType.kBrushless);
-  CANSparkMax blw = new CANSparkMax(RobotMap.blw,MotorType.kBrushless);
+  ControlMode po = ControlMode.PercentOutput;
+
+
+  TalonFX frw = new TalonFX(RobotMap.frw);
+  TalonFX flw = new TalonFX(RobotMap.flw);
+  TalonFX brw = new TalonFX(RobotMap.brw);
+  TalonFX blw = new TalonFX(RobotMap.blw);
 
   float lockAngle;
 
@@ -39,21 +44,21 @@ public class Drivetrain extends Subsystem {
   
 
   public void setEachWheel(double fr,double fl,double br,double bl){
-    frw.set(fr);
-    flw.set(-fl);
-    brw.set(br);
-    blw.set(-bl);
+    frw.set(ControlMode.PercentOutput,fr);
+    flw.set(po,-fl);
+    brw.set(po,br);
+    blw.set(po,-bl);
   }
 
   public void setWheels(double[] speeds){
-    frw.set(speeds[0]);
-    flw.set(-speeds[1]);
-    brw.set(speeds[2]);
-    blw.set(-speeds[3]);
+    frw.set(po,speeds[0]);
+    flw.set(po,-speeds[1]);
+    brw.set(po,speeds[2]);
+    blw.set(po,-speeds[3]);
   }
 
-  public void setWheel(CANSparkMax wheel,double speed){
-    wheel.set(speed);
+  public void setWheel(TalonFX wheel,double speed){
+    wheel.set(po,speed);
   }
 
 
