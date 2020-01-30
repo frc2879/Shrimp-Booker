@@ -195,7 +195,7 @@ public class Robot extends TimedRobot {
       claw.pull(1);
     }
     
-    
+
   }
 
   /**

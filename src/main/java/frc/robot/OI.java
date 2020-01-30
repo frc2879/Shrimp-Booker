@@ -83,6 +83,9 @@ public class OI {
   {
     return stick.getThrottle();
   }
+  public int getStickAnalog(){
+    return stick.getPOV();
+  }
   public boolean getStickTrig()
   {
     return stick.getTrigger();
