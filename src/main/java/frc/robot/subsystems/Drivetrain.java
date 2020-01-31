@@ -44,7 +44,7 @@ public class Drivetrain extends Subsystem {
   
 
   public void setEachWheel(double fr,double fl,double br,double bl){
-    frw.set(ControlMode.PercentOutput,fr);
+    frw.set(po,fr);
     flw.set(po,-fl);
     brw.set(po,br);
     blw.set(po,-bl);
