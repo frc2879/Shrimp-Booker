@@ -206,8 +206,10 @@ public class Robot extends TimedRobot {
       } else {
         locked = 2;
       }
-      double m = 0.2;
-      drive.mecanumMove(m*Math.sin(oi.getStickHat()),m*Math.cos(oi.getStickHat()),drive.lock(1));
+      double m = st/2;
+      double a = Math.PI*oi.getStickHat()/180;
+      System.out.println(Math.sin(a)+" , "+Math.cos(a));
+      drive.mecanumMove(m*Math.sin(a),m*Math.cos(a),drive.lock(0.05));
     }
 
   }
