@@ -99,6 +99,9 @@ public class OI {
   {
     return stick.getRawButton(3);
   }
+  public int getStickHat(){
+    return stick.getPOV();
+  }
 
   public OI()
   {
