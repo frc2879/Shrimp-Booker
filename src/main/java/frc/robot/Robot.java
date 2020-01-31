@@ -209,7 +209,7 @@ public class Robot extends TimedRobot {
       double m = st/2;
       double a = Math.PI*oi.getStickHat()/180;
       System.out.println(Math.sin(a)+" , "+Math.cos(a));
-      drive.mecanumMove(m*Math.sin(a),m*Math.cos(a),drive.lock(0.05));
+      drive.mecanumMove(m*Math.sin(a),m*Math.cos(a),drive.lock(-0.1));
     }
 
   }
