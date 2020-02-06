@@ -43,6 +43,8 @@ public class Robot extends TimedRobot {
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
+  public int locked = 0;
+
   public Robot(){
     try {
       /* Communicate w/navX-MXP via the MXP SPI Bus.                                     */
@@ -195,6 +197,20 @@ public class Robot extends TimedRobot {
       claw.pull(1);
     }
     
+    if(oi.getStickHat()==-1){
+      locked = 0;
+    } else {
+      if(locked == 0){
+        locked = 1;
+        drive.setLock();
+      } else {
+        locked = 2;
+      }
+      double m = st/2;
+      double a = Math.PI*oi.getStickHat()/180;
+      System.out.println(Math.sin(a)+" , "+Math.cos(a));
+      drive.mecanumMove(m*Math.sin(a),m*Math.cos(a),drive.lock(-0.1));
+    }
     
   }
 
