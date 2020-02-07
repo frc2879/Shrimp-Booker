@@ -44,6 +44,7 @@ public class Robot extends TimedRobot {
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   public int locked = 0;
+  public static double yaw = 0;
 
   public Robot(){
     try {
@@ -147,6 +148,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    yaw = 0;
   }
 
   /**
@@ -154,35 +156,36 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    //System.out.println("teleop tick");
+    // System.out.println("teleop tick");
 
+    yaw += Robot.ahrs.getRawGyroY() / 60;
+    yaw = yaw % 360;
 
-    double motion[] = {0,0,0};
-    double st = (1-oi.getStickT())/2;
-    double sx = oi.getStickX()*st;
-    double sy = oi.getStickY()*st;
-    double sa = oi.getStickA()*st;
+    double motion[] = { 0, 0, 0 };
+    double st = (1 - oi.getStickT()) / 2;
+    double sx = oi.getStickX() * st;
+    double sy = oi.getStickY() * st;
+    double sa = oi.getStickA() * st;
 
     intake.elevate(0.05);
-    shot.shoot(0,0);
-    if(oi.getStickTrig()){
-      double shotAngle = sa*45;
+    shot.shoot(0, 0);
+    if (oi.getStickTrig()) {
+      double shotAngle = sa * 45;
       intake.elevate(0.5);
       flag.point(shotAngle);
-      if(oi.getStickShoot()){
+      if (oi.getStickShoot()) {
         intake.elevate(1);
-        shot.shoot(1,shotAngle);
+        shot.shoot(1, shotAngle);
       }
     } else {
-      
-      
+
       motion[0] = sx;
       motion[1] = sy;
       motion[2] = sa;
-      drive.mecanumMove(sx,sy,sa);
+      drive.mecanumMove(sx, sy, sa);
 
       flag.point(0);
-      if(oi.getStickIntake()){
+      if (oi.getStickIntake()) {
         intake.point(0);
         intake.spin(1);
         intake.elevate(0.5);
@@ -191,29 +194,32 @@ public class Robot extends TimedRobot {
         intake.spin(0);
       }
     }
-    if(oi.getStickClaw()){
+    if (oi.getStickClaw()) {
       claw.reach(1);
     } else {
       claw.pull(1);
     }
-    
-    if(oi.getStickHat()==-1){
+
+    if (oi.getStickHat() == -1) {
       locked = 0;
     } else {
-      if(locked == 0){
+      if (locked == 0) {
         locked = 1;
         drive.setLock();
       } else {
         locked = 2;
       }
-      double m = st/2;
-      double a = Math.PI*oi.getStickHat()/180;
-      System.out.println(Math.sin(a)+" , "+Math.cos(a));
-      drive.mecanumMove(m*Math.sin(a),m*Math.cos(a),drive.lock(-0.1));
+      double m = st / 2;
+      double a = Math.PI * oi.getStickHat() / 180;
+      //System.out.println(Math.sin(a) + " , " + Math.cos(a));
+      drive.mecanumMove(m * Math.sin(a), m * Math.cos(a), drive.lock(-0.01));
     }
 
   }
 
+  public static double getYaw() {
+    return yaw;
+  }
   /**
    * This function is called periodically during test mode.
    */
