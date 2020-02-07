@@ -44,47 +44,52 @@ public class Robot extends TimedRobot {
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   public int locked = 0;
+  public static double yaw = 0;
 
-  public Robot(){
+  public Robot() {
     try {
-      /* Communicate w/navX-MXP via the MXP SPI Bus.                                     */
-      /* Alternatively:  I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB     */
-      /* See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for details. */
-      ahrs = new AHRS(SPI.Port.kMXP); 
-    } catch (RuntimeException ex ) {
-        //DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
+      /* Communicate w/navX-MXP via the MXP SPI Bus. */
+      /* Alternatively: I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB */
+      /*
+       * See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for
+       * details.
+       */
+      ahrs = new AHRS(SPI.Port.kMXP);
+    } catch (RuntimeException ex) {
+      // DriverStation.reportError("Error instantiating navX-MXP: " + ex.getMessage(),
+      // true);
     }
   }
 
-
   /**
-   * This function is run when the robot is first started up and should be
-   * used for any initialization code.
+   * This function is run when the robot is first started up and should be used
+   * for any initialization code.
    */
   @Override
   public void robotInit() {
     oi = new OI();
-    //m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
+    // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
   }
 
   /**
-   * This function is called every robot packet, no matter the mode. Use
-   * this for items like diagnostics that you want ran during disabled,
-   * autonomous, teleoperated and test.
+   * This function is called every robot packet, no matter the mode. Use this for
+   * items like diagnostics that you want ran during disabled, autonomous,
+   * teleoperated and test.
    *
-   * <p>This runs after the mode specific periodic functions, but before
-   * LiveWindow and SmartDashboard integrated updating.
+   * <p>
+   * This runs after the mode specific periodic functions, but before LiveWindow
+   * and SmartDashboard integrated updating.
    */
   @Override
   public void robotPeriodic() {
   }
 
   /**
-   * This function is called once each time the robot enters Disabled mode.
-   * You can use it to reset any subsystem information you want to clear when
-   * the robot is disabled.
+   * This function is called once each time the robot enters Disabled mode. You
+   * can use it to reset any subsystem information you want to clear when the
+   * robot is disabled.
    */
   @Override
   public void disabledInit() {
@@ -97,24 +102,25 @@ public class Robot extends TimedRobot {
 
   /**
    * This autonomous (along with the chooser code above) shows how to select
-   * between different autonomous modes using the dashboard. The sendable
-   * chooser code works with the Java SmartDashboard. If you prefer the
-   * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-   * getString code to get the auto name from the text box below the Gyro
+   * between different autonomous modes using the dashboard. The sendable chooser
+   * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
+   * remove all of the chooser code and uncomment the getString code to get the
+   * auto name from the text box below the Gyro
    *
-   * <p>You can add additional auto modes by adding additional commands to the
-   * chooser code above (like the commented example) or additional comparisons
-   * to the switch structure below with additional strings & commands.
+   * <p>
+   * You can add additional auto modes by adding additional commands to the
+   * chooser code above (like the commented example) or additional comparisons to
+   * the switch structure below with additional strings & commands.
    */
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_chooser.getSelected();
 
     /**
-     * String autoSelected = SmartDashboard.getString("Auto Selector",
-     * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-     * = new MyAutoCommand(); break; case "Default Auto": default:
-     * autonomousCommand = new ExampleCommand(); break; }
+     * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
+     * switch(autoSelected) { case "My Auto": autonomousCommand = new
+     * MyAutoCommand(); break; case "Default Auto": default: autonomousCommand = new
+     * ExampleCommand(); break; }
      **/
 
     // schedule the autonomous command (example)
@@ -128,13 +134,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    /*double st = oi.getStickT()/10;
-    drive.setEachWheel(st,st,st,st);
-    */
-    //mecanumMove(double x,double y,double a)
-
-
-
+    /*
+     * double st = oi.getStickT()/10; drive.setEachWheel(st,st,st,st);
+     */
+    // mecanumMove(double x,double y,double a)
 
   }
 
@@ -147,6 +150,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    yaw = 0;
   }
 
   /**
@@ -154,35 +158,36 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    //System.out.println("teleop tick");
+    // System.out.println("teleop tick");
 
+    yaw += Robot.ahrs.getRawGyroY() / 60;
+    yaw = yaw % 360;
 
-    double motion[] = {0,0,0};
-    double st = (1-oi.getStickT())/2;
-    double sx = oi.getStickX()*st;
-    double sy = oi.getStickY()*st;
-    double sa = oi.getStickA()*st;
+    double motion[] = { 0, 0, 0 };
+    double st = (1 - oi.getStickT()) / 2;
+    double sx = oi.getStickX() * st;
+    double sy = oi.getStickY() * st;
+    double sa = oi.getStickA() * st;
 
     intake.elevate(0.05);
-    shot.shoot(0,0);
-    if(oi.getStickTrig()){
-      double shotAngle = sa*45;
+    shot.shoot(0, 0);
+    if (oi.getStickTrig()) {
+      double shotAngle = sa * 45;
       intake.elevate(0.5);
       flag.point(shotAngle);
-      if(oi.getStickShoot()){
+      if (oi.getStickShoot()) {
         intake.elevate(1);
-        shot.shoot(1,shotAngle);
+        shot.shoot(1, shotAngle);
       }
     } else {
-      
-      
+
       motion[0] = sx;
       motion[1] = sy;
       motion[2] = sa;
-      drive.mecanumMove(sx,sy,sa);
+      drive.mecanumMove(sx, sy, sa);
 
       flag.point(0);
-      if(oi.getStickIntake()){
+      if (oi.getStickIntake()) {
         intake.point(0);
         intake.spin(1);
         intake.elevate(0.5);
@@ -191,27 +196,31 @@ public class Robot extends TimedRobot {
         intake.spin(0);
       }
     }
-    if(oi.getStickClaw()){
+    if (oi.getStickClaw()) {
       claw.reach(1);
     } else {
       claw.pull(1);
     }
-    
-    if(oi.getStickHat()==-1){
+
+    if (oi.getStickHat() == -1) {
       locked = 0;
     } else {
-      if(locked == 0){
+      if (locked == 0) {
         locked = 1;
         drive.setLock();
       } else {
         locked = 2;
       }
-      double m = st/2;
-      double a = Math.PI*oi.getStickHat()/180;
-      System.out.println(Math.sin(a)+" , "+Math.cos(a));
-      drive.mecanumMove(m*Math.sin(a),m*Math.cos(a),drive.lock(-0.1));
+      double m = st / 2;
+      double a = Math.PI * oi.getStickHat() / 180;
+      //System.out.println(Math.sin(a) + " , " + Math.cos(a));
+      drive.mecanumMove(m * Math.sin(a), m * Math.cos(a), drive.lock(-0.01));
     }
-    
+
+  }
+
+  public static double getYaw() {
+    return yaw;
   }
 
   /**

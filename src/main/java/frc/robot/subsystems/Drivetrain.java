@@ -26,7 +26,7 @@ public class Drivetrain extends Subsystem {
   CANSparkMax brw = new CANSparkMax(RobotMap.brw,MotorType.kBrushless);
   CANSparkMax blw = new CANSparkMax(RobotMap.blw,MotorType.kBrushless);
 
-  float lockAngle;
+  double lockAngle;
 
   //frw.setIdleMode(IdleMode.kBrake);
 
@@ -73,11 +73,18 @@ public class Drivetrain extends Subsystem {
   public void mecanumMove(double x,double y,double a){
     setWheels(mecanumSpeeds(x,y,a));
   }
+
+
+
+
+
   public void setLock(){
-    lockAngle = Robot.ahrs.getYaw();
+    lockAngle = Robot.getYaw();
   }
   public double lock(double rate){
-    return (lockAngle-Robot.ahrs.getYaw())*rate;
+    System.out.println(lockAngle-Robot.getYaw());
+    return (lockAngle-Robot.getYaw())*rate;
+    
   }
 
 
