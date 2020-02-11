@@ -41,9 +41,12 @@ public class RobotMap {
   public static final int lshot = 0;
   public static final int rshot = 0;
   public static final int joystick = 0;
+
   public static final double xDead=0.2;
   public static final double yDead=0.2;
   public static final double aDead=0.2;
+
+  public static final double drivePk = -0.015;
 
 
 
