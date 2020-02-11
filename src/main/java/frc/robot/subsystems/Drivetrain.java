@@ -81,6 +81,9 @@ public class Drivetrain extends Subsystem {
   public void setLock(){
     lockAngle = Robot.getYaw();
   }
+  public void adjustLockAngle(double angle){
+    lockAngle+=angle;
+  }
   public double lock(double rate){
     System.out.println(lockAngle-Robot.getYaw());
     return (lockAngle-Robot.getYaw())*rate;

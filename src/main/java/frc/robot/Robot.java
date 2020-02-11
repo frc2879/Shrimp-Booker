@@ -211,6 +211,9 @@ public class Robot extends TimedRobot {
       } else {
         locked = 2;
       }
+      if(abs(oi.getStickA())>0.5){
+        drive.adjustLockAngle(getStickA());
+      }
       double m = st / 2;
       double a = Math.PI * oi.getStickHat() / 180;
       //System.out.println(Math.sin(a) + " , " + Math.cos(a));
