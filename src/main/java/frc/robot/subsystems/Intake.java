@@ -22,7 +22,8 @@ public class Intake extends Subsystem {
 
 
   CANSparkMax conveyor = new CANSparkMax(RobotMap.conveyor, MotorType.kBrushless);
-  CANSparkMax elbow = new CANSparkMax(RobotMap.elbow, MotorType.kBrushless);
+  CANSparkMax lelbow = new CANSparkMax(RobotMap.lelbow, MotorType.kBrushless);
+  CANSparkMax relbow = new CANSparkMax(RobotMap.relbow, MotorType.kBrushless);
   CANSparkMax wrist = new CANSparkMax(RobotMap.wrist, MotorType.kBrushless);
 
   // frw.setIdleMode(IdleMode.kBrake);
