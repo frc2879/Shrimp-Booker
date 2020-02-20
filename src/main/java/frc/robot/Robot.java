@@ -175,7 +175,7 @@ public class Robot extends TimedRobot {
       flag.point(shotAngle);
       if (oi.getStickShoot()) {
         intake.elevate(1);
-        shot.shoot(1, shotAngle);
+        shot.shoot(0.1, shotAngle);
       }
     } else {
 
