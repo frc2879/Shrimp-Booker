@@ -37,7 +37,7 @@ public class RobotMap {
   public static final int flag = 0;
   public static final int conveyor = 0;
   public static final int lelbow = 3;
-  public static final int relbow = 0;
+  public static final int relbow = 6;
   public static final int wrist = 2;
   public static final int lshot = 4;
   public static final int rshot = 5;
