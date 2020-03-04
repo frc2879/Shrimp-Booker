@@ -25,6 +25,7 @@ public class Intake extends Subsystem {
   CANSparkMax lelbow = new CANSparkMax(RobotMap.lelbow, MotorType.kBrushless);
   CANSparkMax relbow = new CANSparkMax(RobotMap.relbow, MotorType.kBrushless);
   CANSparkMax wrist = new CANSparkMax(RobotMap.wrist, MotorType.kBrushless);
+  double elbAngle = 0;
 
   // frw.setIdleMode(IdleMode.kBrake);
 
@@ -38,7 +39,11 @@ public class Intake extends Subsystem {
     conveyor.set(power);
   }
   public void point(double angle){
-
+    elbAngle = angle;
+  }
+  public void lift(double power){
+    relbow.set(-power);
+    lelbow.set(-power);
   }
   public void spin(double power){
     wrist.set(power);

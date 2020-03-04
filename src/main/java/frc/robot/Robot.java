@@ -186,11 +186,11 @@ public class Robot extends TimedRobot {
 
       flag.point(0);
       if (oi.getStickIntake()) {
-        intake.point(0);
+        intake.lift(0);
         intake.spin(1);
         intake.elevate(0.5);
       } else {
-        intake.point(45);
+        intake.lift(0.05);
         intake.spin(0);
       }
     }
