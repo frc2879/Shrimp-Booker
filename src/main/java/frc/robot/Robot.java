@@ -12,20 +12,16 @@ package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.PID.PID;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Flag;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shot;
+//import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.wpilibj.PWMTalonFX;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -38,20 +34,16 @@ import frc.robot.subsystems.Shot;
 public class Robot extends TimedRobot {
   
 
-  public static Drivetrain drive = new Drivetrain();
+  //public static Drivetrain drive = new Drivetrain();
+  public static MecanumDrive mDrive=new MecanumDrive(new PWMTalonFX(RobotMap.frw),new PWMTalonFX(RobotMap.brw),new PWMTalonFX(RobotMap.flw),new PWMTalonFX(RobotMap.blw)); //!Going to use this as issues were observed with Cole's code,
+                                                                                                            //!This code is marked as deprciated.
   double calculatedRotation;
-  public static Claw claw = new Claw();
-  public static Flag flag = new Flag();
-  public static Intake intake = new Intake();
-  public static Shot shot = new Shot();
   public static OI oi;
   public static AHRS ahrs;
   public static boolean trigFlag=true; //Sets the angle of the trigger then resets
   public static double setpoint; //Setpoint for what PID should aim for
   public static PIDController pid=new PIDController(.1, 0, 0);
   public static int setpointTimer=2;
-
-  //pid.enableContinuousInput(-180, 180);
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -60,9 +52,6 @@ public class Robot extends TimedRobot {
 
   public Robot(){
     try {
-      /* Communicate w/navX-MXP via the MXP SPI Bus.                                     */
-      /* Alternatively:  I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB     */
-      /* See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for details. */
       ahrs = new AHRS(SPI.Port.kMXP); 
     } catch (RuntimeException ex ) {
         //DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
@@ -157,6 +146,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    pid.enableContinuousInput(-180, 180); //This may be useful, unknown as of now.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -169,8 +159,12 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     //System.out.println("teleop tick");
 
+    if(oi.isGyroReset()){ //!This will mess up the PID and Trigger mechanism. Therefore,
+      ahrs.reset();        //!This should only be used during PRACTICE sessions!
+    }
 
-    double motion[] = {0,0,0};
+    SmartDashboard.putNumber("Gyro Angle",ahrs.getAngle()); //Is this how you do it?
+
     double st = (1-oi.getStickT())/2;
     double sx = oi.getStickX()*st;
     double sy = oi.getStickY()*st;
@@ -183,16 +177,14 @@ public class Robot extends TimedRobot {
       }else if(trigFlag){
         setpointTimer=0;
       }
-      drive.mecanumMove(sx,sy,-pid.calculate(ahrs.getAngle(), setpoint));
+      SmartDashboard.putNumber("PID Calculated Angle",-pid.calculate(ahrs.getAngle(), setpoint)); //Is this how you do it?
+      mDrive.driveCartesian(sy,sx,-pid.calculate(ahrs.getAngle(), setpoint)); 
     } else {
       setpointTimer++;
 
       trigFlag=true;
-      
-      motion[0] = sx;
-      motion[1] = sy;
-      motion[2] = sa;
-      drive.mecanumMove(sx,sy,sa);
+
+      mDrive.driveCartesian(sy,sx,sa);
     }
 
     

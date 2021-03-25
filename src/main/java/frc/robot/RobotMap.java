@@ -26,20 +26,12 @@ public class RobotMap {
   // public static int rangefinderModule = 1;
   */
 
+  //Wheel motors
   public static final int frw = 1;
   public static final int flw = 14;
   public static final int brw = 16;
   public static final int blw = 15;
-  public static final int linclaw = 0;
-  public static final int rinclaw = 0;
-  public static final int loutclaw = 0;
-  public static final int routclaw = 0;
-  public static final int flag = 0;
-  public static final int conveyor = 0;
-  public static final int elbow = 0;
-  public static final int wrist = 0;
-  public static final int lshot = 0;
-  public static final int rshot = 0;
+  //Joystick inputs
   public static final int joystick = 0;
   public static final double xDead=0.1;
   public static final double yDead=0.1;

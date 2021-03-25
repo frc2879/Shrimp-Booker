@@ -83,21 +83,16 @@ public class OI {
   {
     return stick.getThrottle();
   }
+
+
+
+  public boolean isGyroReset(){ //Awful name, should be bound to a command. Going to for funsies later.
+    return stick.getRawButton(3);
+  }
+
   public boolean getStickTrig()
   {
     return stick.getTrigger();
-  }
-  public boolean getStickIntake()
-  {
-    return stick.getRawButton(1);
-  }
-  public boolean getStickShoot()
-  {
-    return stick.getRawButton(2);
-  }
-  public boolean getStickClaw()
-  {
-    return stick.getRawButton(3);
   }
   public int getStickHat(){
     return stick.getPOV();
