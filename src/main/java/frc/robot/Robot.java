@@ -1,5 +1,4 @@
 
-
 /**
 /*----------------------------------------------------------------------------
 /* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        
@@ -10,6 +9,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
@@ -20,8 +20,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation;
 //import frc.robot.subsystems.Drivetrain;
-import edu.wpi.first.wpilibj.PWMTalonFX;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
   
 
   //public static Drivetrain drive = new Drivetrain();
-  public static MecanumDrive mDrive=new MecanumDrive(new PWMTalonFX(RobotMap.frw),new PWMTalonFX(RobotMap.brw),new PWMTalonFX(RobotMap.flw),new PWMTalonFX(RobotMap.blw)); //!Going to use this as issues were observed with Cole's code,
+  public static MecanumDrive mDrive=new MecanumDrive(new WPI_TalonFX(RobotMap.frw),new WPI_TalonFX(RobotMap.brw),new WPI_TalonFX(RobotMap.flw),new WPI_TalonFX(RobotMap.blw)); //!Going to use this as issues were observed with Cole's code,
                                                                                                             //!This code is marked as deprciated.
   double calculatedRotation;
   public static OI oi;
@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
     try {
       ahrs = new AHRS(SPI.Port.kMXP); 
     } catch (RuntimeException ex ) {
-        //DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
+        DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
     }
   }
 
@@ -157,18 +157,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    //System.out.println("teleop tick");
+    double st = (1-oi.getStickT())/2;
+    double sx = oi.getStickX()*st;
+    double sy = oi.getStickY()*st;
+    double sa = oi.getStickA()*st;
 
     if(oi.isGyroReset()){ //!This will mess up the PID and Trigger mechanism. Therefore,
       ahrs.reset();        //!This should only be used during PRACTICE sessions!
     }
 
     SmartDashboard.putNumber("Gyro Angle",ahrs.getAngle()); //Is this how you do it?
+    SmartDashboard.putBoolean("Trigger Flag", trigFlag);
+    SmartDashboard.putNumber("Joystick X", sx);
+    SmartDashboard.putNumber("Joystick Y", sy);
 
-    double st = (1-oi.getStickT())/2;
-    double sx = oi.getStickX()*st;
-    double sy = oi.getStickY()*st;
-    double sa = oi.getStickA()*st;
     if(oi.getStickTrig()){
       if (trigFlag && setpointTimer>1){
         setpoint=ahrs.getAngle();
@@ -178,6 +180,7 @@ public class Robot extends TimedRobot {
         setpointTimer=0;
       }
       SmartDashboard.putNumber("PID Calculated Angle",-pid.calculate(ahrs.getAngle(), setpoint)); //Is this how you do it?
+      SmartDashboard.putNumber("Joystick Twist", sa);
       mDrive.driveCartesian(sy,sx,-pid.calculate(ahrs.getAngle(), setpoint)); 
     } else {
       setpointTimer++;
@@ -185,6 +188,7 @@ public class Robot extends TimedRobot {
       trigFlag=true;
 
       mDrive.driveCartesian(sy,sx,sa);
+      SmartDashboard.putNumber("Joystick Twist", sa);
     }
 
     
